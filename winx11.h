@@ -6,6 +6,9 @@
 Display *display;
 int dsp;
 XEvent events;
+Colormap cmap;
+XColor xcolour;
+Window winss[35];
 struct wins{
 	int x;
 	int y;
@@ -14,39 +17,52 @@ struct wins{
 	int border;
 	long bords;
 	int color;
-	Window twins;
+	int twins;
 };
 int startxs(void) {
-
-	//Window w;
-	//XEvent e;
-  
 	display=XOpenDisplay(NULL);
 	if(display==NULL){
 		return -1;
 	}
  
-   dsp=DefaultScreen(display);
-   return dsp;
+	dsp=DefaultScreen(display);
+	Colormap cmap=XDefaultColormap(display,dsp);
+	return dsp;
  }
 
 void newWindows(struct wins *twins){
-	twins->twins=XCreateSimpleWindow(display,RootWindow(display,dsp),twins->x,twins->y,twins->w,twins->h, twins->border,twins->bords,twins->color);
-	XSelectInput(display, twins->twins, ExposureMask | KeyPressMask | ButtonPressMask);
-	XMapWindow(display, twins->twins);
-	Atom WM_DELETE_WINDOW = XInternAtom(display, "WM_DELETE_WINDOW", False); 
-	XSetWMProtocols(display, twins->twins, &WM_DELETE_WINDOW, 1);  
+	winss[twins->twins]=XCreateSimpleWindow(display,RootWindow(display,dsp),twins->x,twins->y,twins->w,twins->h, twins->border,twins->bords,twins->color);
 }
-XEvent *getEvent(){
+int getEvent(){
+	int i=0;
 	XNextEvent(display,&events);
-	return &events;
+	if(events.type==Expose)return 1;
+	if(events.type==KeyPress)return 2;
+	return i;
 }
 void closeWindows(struct wins *twins){
-	XDestroyWindow(display, twins->twins); 
+	XDestroyWindow(display, winss[twins->twins]); 
 }
 void closeX(){
    XCloseDisplay(display);
 }
-
-
-
+int RGB(char red,char green , char blue){
+	int rgbs=0x010000*((int)red)+0x0100*((int)green)+((int)blue);
+	return rgbs;
+}
+void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
+	xcolour.red =0x0100*((int)r);
+	xcolour.green =0x0100*((int) g);
+	xcolour.blue = 0x0100*((int)b);
+	xcolour.flags = DoRed | DoGreen | DoBlue;
+	Colormap cmap=XDefaultColormap(display,dsp);
+	XAllocColor(display, cmap, &xcolour);
+	XSetForeground(display, DefaultGC(display,dsp), xcolour.pixel);
+	XFillRectangle(display,winss[twins->twins], DefaultGC(display,dsp),x, y, w, h);
+}
+void refresh(struct wins *twins){
+	XSelectInput(display, winss[twins->twins], ExposureMask | KeyPressMask | ButtonPressMask);
+	XMapWindow(display, winss[twins->twins]);
+	Atom WM_DELETE_WINDOW = XInternAtom(display, "WM_DELETE_WINDOW", False); 
+	XSetWMProtocols(display, winss[twins->twins], &WM_DELETE_WINDOW, 1);  
+}

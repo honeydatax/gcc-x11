@@ -53,6 +53,16 @@ int scaner(int xx,int yy){
 	return -1;
 
 }
+void labels(struct wins *twins,int x,int y,char *msg){
+	xcolour.red =0;//0xff00;
+	xcolour.green =0;//0xff00;
+	xcolour.blue =0; //0xff00;
+	xcolour.flags = DoRed | DoGreen | DoBlue;
+	Colormap cmap=XDefaultColormap(display,dsp);
+	XAllocColor(display, cmap, &xcolour);
+	XSetForeground(display, DefaultGC(display,dsp), xcolour.pixel);
+	XDrawString(display,winss[twins->twins], DefaultGC(display,dsp), x, y+12, msg, strlen(msg));
+}
 void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
 	xcolour.red =0x0100*((int)r);
 	xcolour.green =0x0100*((int) g);
@@ -65,7 +75,12 @@ void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
 }
 void refresh(struct wins *twins){
 	int n=0;
-	for(n=0;n<ccs.count;n++)rects(twins,ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].w,ccs.cs[n].h,ccs.cs[n].red,ccs.cs[n].green,ccs.cs[n].blue);
+	for(n=0;n<ccs.count;n++){
+		if(ccs.cs[n].visible!=0){
+			rects(twins,ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].w,ccs.cs[n].h,ccs.cs[n].red,ccs.cs[n].green,ccs.cs[n].blue);
+			labels(twins,ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].strings);
+		}
+	}
 }
 int startxs(void) {
 	ccs.count=0;
@@ -135,4 +150,11 @@ int addControl(int x,int y,int w,int h,char red,char green,char blue,int visible
 		ccs.count++;
 	}
 	return ccs.count-1;
+}
+void freeLabel(struct wins *twins){
+	int n=0;
+	for(n=0;n<ccs.count;n++){
+			frees(ccs.cs[n].strings);
+
+	}
 }

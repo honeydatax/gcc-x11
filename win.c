@@ -8,9 +8,12 @@ int main(){
 	struct wins w;
 	struct wins *w1;
 	XEvent *events;
+	char sss[2080];
+	char *cc;
 	int i;
 	int n;
 	int nn;
+	int nnn;
 	w1=&w;
 	w1->x=10;
 	w1->y=10;
@@ -23,13 +26,20 @@ int main(){
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
 	ccs.click=Clicks;
+	nnn=0;
 	for (nn=0;nn<5;nn++){
-		for(n=0;n<15;n++)addControl(n*40+10,nn*40+10,30,30,100,100,255,-1,NULL,-1);
+		for(n=0;n<15;n++){
+			sprintf(sss,"!%d",nnn);
+			cc=newString(sss);
+			addControl(n*40+10,nn*40+10,30,30,100,100,255,-1,cc,-1);
+			nnn++;
+		}	
 	}
 	events=getEvent(w1);
 	while(events->type!=KeyPress){
 		events=getEvent(w1);
 	}
+	freeLabel(w1);
 	closeWindows(w1);
 	closeX();
 	return 0;

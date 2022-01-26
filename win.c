@@ -9,6 +9,8 @@ int main(){
 	struct wins *w1;
 	XEvent *events;
 	int i;
+	int n;
+	int nn;
 	w1=&w;
 	w1->x=10;
 	w1->y=10;
@@ -20,14 +22,12 @@ int main(){
 	w1->twins=0;
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
-		refresh(w1);
-	events=getEvent();
-	onDraw(w1);
+	for (nn=0;nn<5;nn++){
+		for(n=0;n<15;n++)addControl(n*40+10,nn*40+10,30,30,100,100,255,-1,NULL,-1);
+	}
+	events=getEvent(w1);
 	while(events->type!=KeyPress){
-		if(events->type==Expose){
-			onDraw(w1);
-		}
-		events=getEvent();
+		events=getEvent(w1);
 	}
 	closeWindows(w1);
 	closeX();

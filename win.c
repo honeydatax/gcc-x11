@@ -1,8 +1,8 @@
 #include <unistd.h>
 #include "winx11.h"
 //gcc -o win win.c -lX11
-void onDraw(struct wins *w1){
-	rects(w1,50,50,150,150,100,100,255);
+void Clicks(int index){
+	printf("you click control index: %d\n",index);
 }
 int main(){
 	struct wins w;
@@ -22,6 +22,7 @@ int main(){
 	w1->twins=0;
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
+	ccs.click=Clicks;
 	for (nn=0;nn<5;nn++){
 		for(n=0;n<15;n++)addControl(n*40+10,nn*40+10,30,30,100,100,255,-1,NULL,-1);
 	}

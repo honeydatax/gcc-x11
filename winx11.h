@@ -18,6 +18,7 @@ struct control{
 struct controls{
 	int bmouses;
 	int count;
+	void (*click)();
 	struct control cs[maxControls];
 };
 struct controls ccs;
@@ -37,6 +38,21 @@ struct wins{
 	int color;
 	int twins;
 };
+int inside(int x,int y,int w,int h,int xx, int yy){
+	int rets=0;
+	if(xx>x && yy>y && xx<x+w && yy<y+h)return -1;
+	return rets;
+}
+int scaner(int xx,int yy){
+	int rets=-1;
+	int n=0;
+	for(n=0;n<ccs.count;n++){
+		rets=inside(ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].w,ccs.cs[n].h,xx,yy);
+		if(rets!=0)return n;
+	}
+	return -1;
+
+}
 void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
 	xcolour.red =0x0100*((int)r);
 	xcolour.green =0x0100*((int) g);
@@ -72,10 +88,23 @@ void newWindows(struct wins *twins){
 }
 XEvent *getEvent(struct wins *twins){
 	int i=0;
+	int ii;
 	XNextEvent(display,&events);
 	if(events.type==Expose){
 		refresh(twins);
 	}
+	ii=(events.xbutton.button & 1);
+	if(ii==1 && ccs.bmouses==0){
+		ccs.bmouses=0;
+		i=scaner(events.xbutton.x,events.xbutton.y);
+		if (i!=-1){
+			(*ccs.click)(i);
+		}
+	}
+	if(ii==0) {
+		ccs.bmouses=0;
+	}
+	
 
 	return &events;
 }

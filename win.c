@@ -11,6 +11,7 @@ int main(){
 	char sss[2080];
 	char *cc;
 	int i;
+	int t;
 	int n;
 	int nn;
 	int nnn;
@@ -29,9 +30,11 @@ int main(){
 	nnn=0;
 	for (nn=0;nn<5;nn++){
 		for(n=0;n<15;n++){
+			t=-1;
+			if(nnn==55)t=0;
 			sprintf(sss,"!%d",nnn);
 			cc=newString(sss);
-			addControl(n*40+10,nn*40+10,30,30,100,100,255,-1,cc,-1);
+			addControl(n*40+10,nn*40+10,30,30,100,100,255,t,cc,-1);
 			nnn++;
 		}	
 	}

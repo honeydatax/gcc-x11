@@ -48,7 +48,7 @@ int scaner(int xx,int yy){
 	int n=0;
 	for(n=0;n<ccs.count;n++){
 		rets=inside(ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].w,ccs.cs[n].h,xx,yy);
-		if(rets!=0)return n;
+		if(rets!=0 && ccs.cs[n].visible!=0)return n;
 	}
 	return -1;
 

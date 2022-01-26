@@ -61,7 +61,7 @@ void labels(struct wins *twins,int x,int y,char *msg){
 	Colormap cmap=XDefaultColormap(display,dsp);
 	XAllocColor(display, cmap, &xcolour);
 	XSetForeground(display, DefaultGC(display,dsp), xcolour.pixel);
-	XDrawString(display,winss[twins->twins], DefaultGC(display,dsp), x, y+12, msg, strlen(msg));
+	if(msg!=NULL)XDrawString(display,winss[twins->twins], DefaultGC(display,dsp), x, y+12, msg, strlen(msg));
 }
 void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
 	xcolour.red =0x0100*((int)r);

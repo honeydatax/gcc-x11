@@ -113,7 +113,7 @@ XEvent *getEvent(struct wins *twins){
 		ccs.bmouses=0;
 		i=scaner(events.xbutton.x,events.xbutton.y);
 		if (i!=-1){
-			(*ccs.click)(i);
+			if(ccs.click!=NULL)(*ccs.click)(i);
 		}
 	}
 	if(ii==0) {
@@ -156,5 +156,16 @@ void freeLabel(struct wins *twins){
 	for(n=0;n<ccs.count;n++){
 			frees(ccs.cs[n].strings);
 
+	}
+}
+XEvent *msgbox(struct wins *twins,char *s){
+	int i=0;
+	int ii;
+	events.type=0;
+	while(events.type!=KeyPress){
+		XNextEvent(display,&events);
+		if(events.type==Expose){
+			labels(twins,10,10,s);
+		}
 	}
 }

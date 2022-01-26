@@ -21,13 +21,13 @@ int main(){
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
 		refresh(w1);
-	i=getEvent();
+	events=getEvent();
 	onDraw(w1);
-	while(i!=2){
-		if(i==1){
+	while(events->type!=KeyPress){
+		if(events->type==Expose){
 			onDraw(w1);
 		}
-		i=getEvent();
+		events=getEvent();
 	}
 	closeWindows(w1);
 	closeX();

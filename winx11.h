@@ -39,6 +39,30 @@ struct wins{
 	int color;
 	int twins;
 };
+char toRed(int colors){
+	int r;
+	char rr;
+	r=colors & 0xff0000;
+	r=r>>16;
+	rr=(char)r;
+	return rr;
+}
+char toGreen(int colors){
+	int g;
+	char gg;
+	g=colors & 0xff00;
+	g=g>>8;
+	gg=(char)g;
+	return gg;
+}
+char toBlue(int colors){
+	int b;
+	char bb;
+	b=colors & 0xff;
+	bb=(char)b;
+	return bb;
+}
+
 int inside(int x,int y,int w,int h,int xx, int yy){
 	int rets=0;
 	if(xx>x && yy>y && xx<x+w && yy<y+h)return -1;
@@ -203,10 +227,9 @@ char *inputbox(struct wins *twins,char *s){
 				if(keysym==XK_BackSpace){
 					frees(cc);
 					cc=newString("");
-					rects(twins,0,0,twins->w,twins->h,150,150,255);
+					rects(twins,0,0,twins->w,twins->h,toRed(twins->color),toGreen(twins->color),toBlue(twins->color));
 				}
 				if(keysym==XK_Return){
-					//XK_Escape
 					ii=1;
 				}
 				labels(twins,10,10,cc);

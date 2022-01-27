@@ -162,10 +162,12 @@ XEvent *msgbox(struct wins *twins,char *s){
 	int i=0;
 	int ii;
 	events.type=0;
-	while(events.type!=KeyPress){
-		XNextEvent(display,&events);
+	ii=0;
+	while(ii!=1){
 		if(events.type==Expose){
 			labels(twins,10,10,s);
 		}
+		XNextEvent(display,&events);
+		if((events.xbutton.button)!=0 && (inside(twins->x,twins->y,twins->w,twins->h,events.xbutton.x,events.xbutton.y))!=0)ii=1;
 	}
 }

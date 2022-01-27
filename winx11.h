@@ -14,11 +14,12 @@ struct control{
 	int visible;
 	char *strings;
 	int pic; 
+	void (*click)();
+	int form;
 };
 struct controls{
 	int bmouses;
 	int count;
-	void (*click)();
 	struct control cs[maxControls];
 };
 struct controls ccs;
@@ -43,12 +44,12 @@ int inside(int x,int y,int w,int h,int xx, int yy){
 	if(xx>x && yy>y && xx<x+w && yy<y+h)return -1;
 	return rets;
 }
-int scaner(int xx,int yy){
+int scaner(struct wins *twins,int xx,int yy){
 	int rets=-1;
 	int n=0;
 	for(n=0;n<ccs.count;n++){
 		rets=inside(ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].w,ccs.cs[n].h,xx,yy);
-		if(rets!=0 && ccs.cs[n].visible!=0)return n;
+		if(rets!=0 && ccs.cs[n].visible!=0 && ccs.cs[n].form==twins->twins)return n;
 	}
 	return -1;
 
@@ -76,7 +77,7 @@ void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
 void refresh(struct wins *twins){
 	int n=0;
 	for(n=0;n<ccs.count;n++){
-		if(ccs.cs[n].visible!=0){
+		if(ccs.cs[n].visible!=0 && ccs.cs[n].form==twins->twins){
 			rects(twins,ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].w,ccs.cs[n].h,ccs.cs[n].red,ccs.cs[n].green,ccs.cs[n].blue);
 			labels(twins,ccs.cs[n].x,ccs.cs[n].y,ccs.cs[n].strings);
 		}
@@ -111,9 +112,9 @@ XEvent *getEvent(struct wins *twins){
 	ii=(events.xbutton.button & 1);
 	if(ii==1 && ccs.bmouses==0){
 		ccs.bmouses=0;
-		i=scaner(events.xbutton.x,events.xbutton.y);
+		i=scaner(twins,events.xbutton.x,events.xbutton.y);
 		if (i!=-1){
-			if(ccs.click!=NULL)(*ccs.click)(i);
+			if(ccs.cs[i].click!=NULL)(*ccs.cs[i].click)(i);
 		}
 	}
 	if(ii==0) {
@@ -133,7 +134,7 @@ int RGB(char red,char green , char blue){
 	int rgbs=0x010000*((int)red)+0x0100*((int)green)+((int)blue);
 	return rgbs;
 }
-int addControl(int x,int y,int w,int h,char red,char green,char blue,int visible,char *s,int pic){
+int addControl(int x,int y,int w,int h,char red,char green,char blue,int visible,char *s,int pic,void (*click)(),int form){
 	if (ccs.count>maxControls-2){
 		return -1;
 	}else{
@@ -147,6 +148,8 @@ int addControl(int x,int y,int w,int h,char red,char green,char blue,int visible
 		ccs.cs[ccs.count].visible=visible;
 		ccs.cs[ccs.count].strings=s;
 		ccs.cs[ccs.count].pic=pic;
+		ccs.cs[ccs.count].click=click;
+		ccs.cs[ccs.count].form=form;
 		ccs.count++;
 	}
 	return ccs.count-1;

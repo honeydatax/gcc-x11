@@ -5,7 +5,6 @@ void Clicks(int index){
 	struct wins w;
 	struct wins *w1;
 	XEvent *events;
-	ccs.click=NULL;
 	w1=&w;
 	w1->x=100;
 	w1->y=50;
@@ -19,7 +18,6 @@ void Clicks(int index){
 	events=msgbox(w1,"hello world");
 	sleep(1);
 	closeWindows(w1);	
-	ccs.click=Clicks;
 }
 int main(int argc,char *argv[]){
 	struct wins w;
@@ -43,9 +41,8 @@ int main(int argc,char *argv[]){
 	w1->twins=0;
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
-	ccs.click=Clicks;
 	cc=newString("       msgbox...");
-	addControl(8,8,600,16,100,100,255,-1,cc,-1);
+	addControl(8,8,600,16,100,100,255,-1,cc,-1,Clicks,0);
 	events=getEvent(w1);
 	while(events->type!=KeyPress){
 		events=getEvent(w1);

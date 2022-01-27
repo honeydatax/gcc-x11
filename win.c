@@ -1,7 +1,9 @@
 #include <unistd.h>
 #include "winx11.h"
 //gcc -o win win.c -lX11
+int closewin0=0;
 void Clicks(int index){
+	closewin0=1;
 	printf("you click control index: %d\n",index);
 }
 int main(){
@@ -26,7 +28,6 @@ int main(){
 	w1->twins=0;
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
-	ccs.click=Clicks;
 	nnn=0;
 	for (nn=0;nn<5;nn++){
 		for(n=0;n<15;n++){
@@ -34,12 +35,11 @@ int main(){
 			if(nnn==55)t=0;
 			sprintf(sss,"!%d",nnn);
 			cc=newString(sss);
-			addControl(n*40+10,nn*40+10,30,30,100,100,255,t,cc,-1);
+			addControl(n*40+10,nn*40+10,30,30,100,100,255,t,cc,-1,Clicks,0);
 			nnn++;
 		}	
 	}
-	events=getEvent(w1);
-	while(events->type!=KeyPress){
+	while(closewin0!=1){
 		events=getEvent(w1);
 	}
 	freeLabel(w1);

@@ -3,6 +3,7 @@
 #include <X11/Xos.h>
 #include "fileList.h"
 #define maxControls 100
+XEvent events;
 struct control{
 	int x;
 	int y;
@@ -25,7 +26,6 @@ struct controls{
 struct controls ccs;
 Display *display;
 int dsp;
-XEvent events;
 Colormap cmap;
 XColor xcolour;
 Window winss[35];
@@ -162,15 +162,16 @@ void freeLabel(struct wins *twins){
 	}
 }
 XEvent *msgbox(struct wins *twins,char *s){
+	XEvent event;
 	int i=0;
 	int ii;
-	events.type=0;
+	event.type=0;
 	ii=0;
 	while(ii!=1){
-		if(events.type==Expose){
+		XNextEvent(display,&event);
+		if(event.type==Expose){
 			labels(twins,10,10,s);
 		}
-		XNextEvent(display,&events);
-		if((events.xbutton.button)!=0 && (inside(twins->x,twins->y,twins->w,twins->h,events.xbutton.x,events.xbutton.y))!=0)ii=1;
+		if((event.xbutton.button)!=0 && (inside(0,0,twins->w,twins->h,event.xbutton.x,event.xbutton.y))!=0)ii=1;
 	}
 }

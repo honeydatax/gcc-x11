@@ -16,7 +16,6 @@ void Clicks(int index){
 	w1->twins=1;
 	newWindows(w1);
 	events=msgbox(w1,"hello world");
-	sleep(1);
 	closeWindows(w1);	
 }
 int main(int argc,char *argv[]){

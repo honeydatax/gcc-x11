@@ -175,3 +175,37 @@ XEvent *msgbox(struct wins *twins,char *s){
 		if((event.xbutton.button)!=0 && (inside(0,0,twins->w,twins->h,event.xbutton.x,event.xbutton.y))!=0)ii=1;
 	}
 }
+char *inputbox(struct wins *twins,char *s){
+	XEvent event;
+	KeySym keysym;
+	char *cc;
+	int len;
+	char buf[128] = {0};
+	char ccc[10];
+	int i=0;
+	int ii;
+	event.type=0;
+	ii=0;
+	cc=newString(s);
+	while(ii!=1){
+		XNextEvent(display,&event);
+		if(event.type==Expose){
+			
+		}
+		if(event.type==KeyPress){
+			buf[0]=0;
+			len = XLookupString(&event.xkey, buf, sizeof buf, &keysym, NULL);
+			if (keysym != 0){
+				ccc[0]=buf[0];
+				ccc[1]=0;
+				cc=catString(cc,ccc);
+				if(keysym==XK_Escape){
+					ii=1;
+				}
+				labels(twins,10,10,cc);
+			}
+		}
+		
+	}
+	return cc;
+}

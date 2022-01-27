@@ -104,7 +104,7 @@ void newWindows(struct wins *twins){
 }
 XEvent *getEvent(struct wins *twins){
 	int i=0;
-	int ii;
+	int ii=0;
 	XNextEvent(display,&events);
 	if(events.type==Expose){
 		refresh(twins);

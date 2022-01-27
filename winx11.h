@@ -196,10 +196,17 @@ char *inputbox(struct wins *twins,char *s){
 			buf[0]=0;
 			len = XLookupString(&event.xkey, buf, sizeof buf, &keysym, NULL);
 			if (keysym != 0){
-				ccc[0]=buf[0];
+				ccc[0]=0;
+				if(buf[0]>31)ccc[0]=buf[0];
 				ccc[1]=0;
 				cc=catString(cc,ccc);
-				if(keysym==XK_Escape){
+				if(keysym==XK_BackSpace){
+					frees(cc);
+					cc=newString("");
+					rects(twins,0,0,twins->w,twins->h,150,150,255);
+				}
+				if(keysym==XK_Return){
+					//XK_Escape
 					ii=1;
 				}
 				labels(twins,10,10,cc);

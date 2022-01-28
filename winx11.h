@@ -4,7 +4,7 @@
 #include "fileList.h"
 #define maxControls 100
 #define maxwins 35
-XEvent events;
+XEvent events[maxwins];
 struct control{
 	int x;
 	int y;
@@ -133,14 +133,14 @@ void newWindows(struct wins *twins){
 XEvent *getEvent(struct wins *twins){
 	int i=0;
 	int ii=0;
-	XNextEvent(display,&events);
-	if(events.type==Expose){
+	XNextEvent(display,&events[twins->twins]);
+	if(events[twins->twins].type==Expose){
 		refresh(twins);
 	}
-	ii=(events.xbutton.button & 1);
+	ii=(events[twins->twins].xbutton.button & 1);
 	if(ii==1 && ccs.bmouses==0){
 		ccs.bmouses=0;
-		i=scaner(twins,events.xbutton.x,events.xbutton.y);
+		i=scaner(twins,events[twins->twins].xbutton.x,events[twins->twins].xbutton.y);
 		if (i!=-1){
 			if(ccs.cs[i].click!=NULL)(*ccs.cs[i].click)(i);
 		}
@@ -150,7 +150,7 @@ XEvent *getEvent(struct wins *twins){
 	}
 	
 
-	return &events;
+	return &events[twins->twins];
 }
 void closeWindows(struct wins *twins){
 	XFreeGC(display,gc[twins->twins]);

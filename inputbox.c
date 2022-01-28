@@ -1,6 +1,12 @@
 #include <unistd.h>
 #include "winx11.h"
 //gcc -o win win.c -lX11
+int closewin0=0;
+int buttonSize=120;
+void closew(int index){
+	closewin0=1;
+	printf("you click control index: %d\n",index);
+}
 void Clicks(int index){
 	struct wins w;
 	struct wins *w1;
@@ -42,13 +48,12 @@ int main(int argc,char *argv[]){
 	w1->twins=0;
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
-	cc=newString("       inputBox...");
-	addControl(8,8,600,16,100,100,255,-1,cc,-1,Clicks,0);
+	addControl(0*(buttonSize+10)+10,10,buttonSize,20,100,100,255,1," close this window",-1,closew,0);
+	addControl(1*(buttonSize+10)+10,10,buttonSize,20,100,100,255,1," show inputbox",-1,Clicks,0);
 	events=getEvent(w1);
-	while(events->type!=KeyPress){
+	while(closewin0!=1){
 		events=getEvent(w1);
 	}
-	freeLabel(w1);
 	closeWindows(w1);
 	closeX();
 	return 0;

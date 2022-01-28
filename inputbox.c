@@ -21,6 +21,7 @@ void Clicks(int index){
 	w1->color=RGB(150,150,255);
 	w1->twins=1;
 	newWindows(w1);
+	setCaption(w1,"get a string","input X");
 	c=inputbox(w1,"");
 	print(c);
 	frees(c);
@@ -48,6 +49,7 @@ int main(int argc,char *argv[]){
 	w1->twins=0;
 	if (startxs()==-1)exit(1);
 	newWindows(w1);
+	setCaption(w1,"inputbox string exemple","input X");
 	addControl(0*(buttonSize+10)+10,10,buttonSize,20,100,100,255,1," close this window",-1,closew,0);
 	addControl(1*(buttonSize+10)+10,10,buttonSize,20,100,100,255,1," show inputbox",-1,Clicks,0);
 	events=getEvent(w1);

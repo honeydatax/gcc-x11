@@ -244,3 +244,6 @@ char *inputbox(struct wins *twins,char *s){
 	}
 	return cc;
 }
+void setCaption(struct wins *twins,char *s1,char *s2){
+	XSetStandardProperties(display,winss[twins->twins],s1,s2,None,NULL,0,NULL);
+}

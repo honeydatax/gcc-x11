@@ -3,6 +3,7 @@
 #include <X11/Xos.h>
 #include "fileList.h"
 #define maxControls 100
+#define maxwins 35
 XEvent events;
 struct control{
 	int x;
@@ -28,7 +29,8 @@ Display *display;
 int dsp;
 Colormap cmap;
 XColor xcolour;
-Window winss[35];
+Window winss[maxwins];
+GC gc[maxwins];
 struct wins{
 	int x;
 	int y;
@@ -85,8 +87,8 @@ void labels(struct wins *twins,int x,int y,char *msg){
 	xcolour.flags = DoRed | DoGreen | DoBlue;
 	Colormap cmap=XDefaultColormap(display,dsp);
 	XAllocColor(display, cmap, &xcolour);
-	XSetForeground(display, DefaultGC(display,dsp), xcolour.pixel);
-	if(msg!=NULL)XDrawString(display,winss[twins->twins], DefaultGC(display,dsp), x, y+12, msg, strlen(msg));
+	XSetForeground(display, gc[twins->twins], xcolour.pixel);
+	if(msg!=NULL)XDrawString(display,winss[twins->twins], gc[twins->twins], x, y+12, msg, strlen(msg));
 }
 void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
 	xcolour.red =0x0100*((int)r);
@@ -95,8 +97,8 @@ void rects(struct wins *twins,int x,int y, int w, int h,char r,int g,int b){
 	xcolour.flags = DoRed | DoGreen | DoBlue;
 	Colormap cmap=XDefaultColormap(display,dsp);
 	XAllocColor(display, cmap, &xcolour);
-	XSetForeground(display, DefaultGC(display,dsp), xcolour.pixel);
-	XFillRectangle(display,winss[twins->twins], DefaultGC(display,dsp),x, y, w, h);
+	XSetForeground(display, gc[twins->twins], xcolour.pixel);
+	XFillRectangle(display,winss[twins->twins],gc[twins->twins],x, y, w, h);
 }
 void refresh(struct wins *twins){
 	int n=0;
@@ -125,6 +127,8 @@ void newWindows(struct wins *twins){
 	XMapWindow(display, winss[twins->twins]);
 	Atom WM_DELETE_WINDOW = XInternAtom(display, "WM_DELETE_WINDOW", False); 
 	XSetWMProtocols(display, winss[twins->twins], &WM_DELETE_WINDOW, 1);  
+	gc[twins->twins]=XCreateGC(display,winss[twins->twins],0,0);
+	
 }
 XEvent *getEvent(struct wins *twins){
 	int i=0;
@@ -149,6 +153,7 @@ XEvent *getEvent(struct wins *twins){
 	return &events;
 }
 void closeWindows(struct wins *twins){
+	XFreeGC(display,gc[twins->twins]);
 	XDestroyWindow(display, winss[twins->twins]); 
 }
 void closeX(){

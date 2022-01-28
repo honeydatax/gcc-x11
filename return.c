@@ -49,12 +49,13 @@ void showreturn(char *argv){
 	while(closewin3!=1){
 		events=getEvent(w1);
 	}
-	endexit:
 	for(n=0;n<20;n++){
 			if(n<nn)if(ccs.cs[cccs+n].strings[0]!=0)frees(ccs.cs[cccs+n].strings);
 			ccs.cs[cccs+n].strings="";
 	}
 	closeWindows(w1);
+	endexit:
+	cc=NULL;
 }
 void closew(int index){
 	closewin0=1;
